@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Headers Analyzer | Auditoría de Cabeceras Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Security Headers Analyzer</h1>
+            <p>Auditoría completa de cabeceras de seguridad web</p>
+        </header>
+        
+        <div class="analyzer-box">
+            {% if error %}
+            <div class="error-message">
+                ⚠️ {{ error }}
+            </div>
+            {% endif %}
+            
+            <form action="/analyze" method="POST">
+                <div class="input-group">
+                    <input type="url" 
+                           name="url" 
+                           placeholder="Ingresa una URL (ej: https://ejemplo.com)"
+                           required>
+                    <button type="submit">Analizar Seguridad</button>
+                </div>
+                <div class="examples">
+                    <small>Ejemplos: google.com, github.com, tu-sitio-web.com</small>
+                </div>
+            </form>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>6+ Cabeceras</h3>
+                <p>CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Puntuación Global</h3>
+                <p>Sistema de scoring 0-100 basado en mejores prácticas</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📝</div>
+                <h3>Reportes Accionables</h3>
+                <p>Recomendaciones específicas para hardening</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

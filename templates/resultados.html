@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados | Security Headers Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Resultados del Análisis</h1>
+            <a href="/" class="back-link">← Nuevo análisis</a>
+        </header>
+        
+        <div class="url-info">
+            <strong>URL analizada:</strong> {{ result.url }}<br>
+            <strong>Código HTTP:</strong> {{ result.status_code }}<br>
+            <strong>Redirección final:</strong> {{ result.final_url }}
+        </div>
+        
+        <div class="score-section {{ result.risk_class }}">
+            <div class="score-circle">
+                <span class="score-value">{{ result.summary.total_score }}</span>
+                <span class="score-label">Puntuación</span>
+            </div>
+            <div class="risk-level">
+                <h2>Riesgo {{ result.overall_risk }}</h2>
+                <div class="risk-stats">
+                    <span class="high">Alto: {{ result.summary.high_risk }}</span>
+                    <span class="medium">Medio: {{ result.summary.medium_risk }}</span>
+                    <span class="low">Bajo: {{ result.summary.low_risk }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="headers-table">
+            <h2>📋 Análisis de Cabeceras</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cabecera</th>
+                        <th>Estado</th>
+                        <th>Valor Actual</th>
+                        <th>Severidad</th>
+                        <th>Recomendación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for header in result.headers_analyzed %}
+                    <tr class="severity-{{ header.severity }}">
+                        <td><strong>{{ header.name }}</strong></td>
+                        <td class="status">{{ header.status | safe }}</td>
+                        <td class="value">{{ header.value[:100] }}{% if header.value|length > 100 %}...{% endif %}</td>
+                        <td>
+                            {% if header.severity == 'high' %}
+                            🔴 Alta
+                            {% elif header.severity == 'medium' %}
+                            🟡 Media
+                            {% else %}
+                            🟢 Baja
+                            {% endif %}
+                        </td>
+                        <td class="recommendation">{{ header.recommendation }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="export-section">
+            <button onclick="window.print()">📄 Exportar a PDF</button>
+            <button onclick="copyReport()">📋 Copiar Reporte</button>
+        </div>
+    </div>
+    
+    <script>
+        function copyReport() {
+            const reportText = document.querySelector('.url-info').innerText + 
+                              '\n\n' + 
+                              document.querySelector('.score-section').innerText +
+                              '\n\n' +
+                              Array.from(document.querySelectorAll('.headers-table tr'))
+                                   .map(row => row.innerText)
+                                   .join('\n');
+            
+            navigator.clipboard.writeText(reportText);
+            alert('Reporte copiado al portapapeles');
+        }
+    </script>
+</body>
+</html>
